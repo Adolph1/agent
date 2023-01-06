@@ -15,6 +15,7 @@ class m210927_063133_create_service_type_table extends Migration
         $this->createTable('{{%service_type}}', [
             'id' => $this->primaryKey(),
             'title' => $this->string(200)->notNull(),
+            ''
         ]);
     }
 
