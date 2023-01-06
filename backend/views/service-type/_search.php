@@ -22,6 +22,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'title') ?>
 
+    <?= $form->field($model, 'company_id') ?>
+
+    <?= $form->field($model, 'created_by') ?>
+
+    <?= $form->field($model, 'created_at') ?>
+
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-outline-secondary']) ?>

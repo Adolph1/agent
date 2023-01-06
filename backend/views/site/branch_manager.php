@@ -2,207 +2,138 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'DASHBOARD';
+use backend\models\CashBookSearch;
+use kartik\grid\GridView;
+
+$this->title ='@'. \backend\models\Branch::myBranchName();
 ?>
 <div class="site-index">
 
     <div class="row">
         <!-- /.col -->
-        <div class="col-12 col-sm-4 col-md-4">
-            <div class="info-box mb-6">
-                <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-building"></i></span>
+        <div class="col-12 col-sm-8 col-md-8">
 
-                <div class="info-box-content">
-                    <span class="info-box-text">Stations</span>
-                    <span class="info-box-number">
-                        <?=
-                        \backend\models\Station::getCountByUserCompanyId(Yii::$app->user->identity->company_id);
-                        ?>
-                    </span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
 
-        <!-- fix for small devices only -->
-        <div class="clearfix hidden-md-up"></div>
-
-        <div class="col-12 col-sm-4 col-md-4">
-            <div class="info-box mb-6">
-                <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-fas fa-poll-h"></i></span>
-
-                <div class="info-box-content">
-                    <span class="info-box-text">Total Sales</span>
-                    <span class="info-box-number">
-                        <?=
-                        \backend\models\Sales::getTotalSalesByCompanyId(Yii::$app->user->identity->company_id);
-                        ?>
-                    </span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
-
-        <div class="col-12 col-sm-4 col-md-4">
-            <div class="info-box mb-6">
-                <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-fas fa-poll-h"></i></span>
-
-                <div class="info-box-content">
-                    <span class="info-box-text">Total Bonus</span>
-                    <span class="info-box-number">
-                        <?=
-                        \backend\models\BonusCardTransaction::getTotalBonusByCompanyId(Yii::$app->user->identity->company_id);
-                        ?>
-                    </span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
-
-        <!-- /.col -->
-    </div>
-    <div class="row" style="margin-top: 10px">
-
-        <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
-            <div class="card">
-                <div class="card-header border-0 bg-primary">
-                    <h3 class="card-title">Today sales per product</h3>
-                    <span>&nbsp;&nbsp;
-                        <?php
-                        $date1 = date("Y-m-d 07:00");
-                        $date2 = date("Y-m-d H:i:s",strtotime($date1."+23 hours +59 minutes"));
-                        // echo $date1;
-                        // echo $date2;
-                        //$date2;
-                        echo $date2;
-                        ?>
-                    </span>
-                </div>
-                <div class="card-body p-0">
+            <div class="card-purple">
+                <div class="card-header">Today Transactions Summary</div>
+                <div class="card-body">
                     <table class="table table-striped table-valign-middle">
                         <thead>
                         <tr>
                             <th>S/N</th>
-                            <th>PRODUCT</th>
-                            <th>LITERS</th>
-                            <th>AMOUNT</th>
+                            <th>ACCOUNT NAME</th>
+                            <th>TOTAL MONEY IN</th>
+                            <th colspan="2" class="text-right">TOTAL MONEY OUT</th>
+
                         </tr>
                         </thead>
                         <tbody>
                         <?php
-                        $productGradeids = \frontend\models\Grade::find()->all();
-                        $sum = 0.00;
-                        if($productGradeids != null){
-                            foreach ($productGradeids as $key => $value) {
-                                echo '<tr>
-                                    <td>'.$value["id"].'</td>
-                                    <td>'.$value["name"].'</td>
-                                    <td>'.Yii::$app->formatter->asDecimal(\frontend\models\Sales::getTodayTotalSoldVolumeByGradeId($value["id"]),2).'</td>
-                                    <td>'.Yii::$app->formatter->asDecimal(\frontend\models\Sales::getTodayTotalSalesByGradeId($value["id"]),2).'</td>
-                                    </tr>';
-                                $sum =$sum + \frontend\models\Sales::getTodayTotalSalesByGradeId($value["id"]);
+                        $accounts = \backend\models\Account::find()->where(['branch_id' => \backend\models\Branch::getMyBranchId()])->all();
+                        if($accounts != null){
+                            $i =1;
+                            $sum = 0;
+                            $withsum = 0;
+                            $depsum = 0;
+                            foreach ($accounts as $account){
+                                $withdrawBalance =  \backend\models\CashBook::getTodayWithdrawByAccountID($account->id);
+                                $depositBalance =  \backend\models\CashBook::getTodayDepositByAccountID($account->id);
+
+                                ?>
+                                <tr>
+                                    <td><?= $i;?></td>
+                                    <td><?= $account->name;?></td>
+                                    <td><?= Yii::$app->formatter->asDecimal($depositBalance,2);?></td>
+                                    <td colspan="2" class="text-right"><?= Yii::$app->formatter->asDecimal($withdrawBalance,2);?></td>
+
+
+                                </tr>
+                                <?php
+                                $i++;
+                                $withsum = $withsum + $withdrawBalance;
+                                $depsum = $depsum + $depositBalance;
 
                             }
+
+                        ?>
+                        <tr>
+                            <th colspan="2" class="text-right">ACCOUNTS TOTAL MONEY IN</th>
+                            <th><?= Yii::$app->formatter->asDecimal($depsum,2);?></th>
+                            <th class="text-right">ACCOUNTS TOTAL MONEY OUT</th>
+                            <th class="text-right"><?= Yii::$app->formatter->asDecimal($withsum,2);?></th>
+                        </tr>
+                            <?php
                         }
                         ?>
-
                         </tbody>
-                        <tr class="bg-gradient-gray">
-                            <th></th>
-                            <th></th>
+                    </table>
+
+
+                </div>
+            </div>
+            <!-- /.info-box-content -->
+
+            <!-- /.info-box -->
+
+        </div>
+
+        <div class="col-12 col-sm-4 col-md-4">
+
+
+                <div class="card-orange">
+                    <div class="card-header text-white">Account Balances</div>
+                    <div class="card-body">
+                        <table class="table table-striped table-valign-middle">
+                        <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>ACCOUNT NAME</th>
+                            <th>BALANCE</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $accounts = \backend\models\Account::find()->where(['branch_id' => \backend\models\Branch::getMyBranchId()])->all();
+                        if($accounts != null){
+                            $i =1;
+                            $sum = 0;
+                            foreach ($accounts as $account){
+                        ?>
+                        <tr>
+                            <td><?= $i;?></td>
+                            <td><?= $account->name;?></td>
+                            <td><?= Yii::$app->formatter->asDecimal($account->initial_balance,2);?></td>
+                        </tr>
+                        <?php
+                                $i++;
+                                $sum = $sum + $account->initial_balance;
+                            }
+
+                        ?>
+                        <tr>
+                            <td></td>
                             <th class="text-right">Total</th>
                             <th><?= Yii::$app->formatter->asDecimal($sum,2);?></th>
                         </tr>
+                            <?php
+                        }
+                        ?>
+                        </tbody>
+
                     </table>
+
+
+                    </div>
                 </div>
-            </div>
-        </div>
-
-    </div>
-    <div class="row">
-        <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
-            <?php
-            $products = \frontend\models\Grade::find()->all();
-            $sales = array();
-            $data = array();
-            if($products != null){
-                foreach ($products as $product){
-                    $sales[] = [
-                        'name' => $product->name,
-                        'data' => \frontend\models\Sales::getMonthlySalesByProductId($product->id),
-                    ];
-                }
-            }
-            $item_key_data = array_keys($sales);
-            $itemsArraySize = count($sales);
-
-            for($i=0; $i< $itemsArraySize; $i++){
-                $data[] = $sales[$i];
-            }
-
-
-
-
-            echo \dosamigos\highcharts\HighCharts::widget([
-                'clientOptions' => [
-                    'chart' => [
-                        'type' => 'line'
-                    ],
-                    'title' => [
-                        'text' => 'Monthly sales'
-                    ],
-                    'xAxis' => [
-                        'categories' => [
-                            'Jan',
-                            'Feb',
-                            'Mar',
-                            'Apr',
-                            'May',
-                            'Jun',
-                            'Jul',
-                            'Aug',
-                            'Sep',
-                            'Oct',
-                            'Nov',
-                            'Dec',
-                        ]
-                    ],
-                    'yAxis' => [
-                        'title' => [
-                            'text' =>'Total Amount'
-                        ]
-                    ],
-                    'series' => $data
-                ]
-            ]);
-            ?>
-        </div>
-    </div>
-
-
-
-    <div class="row">
-        <div class="col-12 col-sm-6 col-md-3">
+                <!-- /.info-box-content -->
 
             <!-- /.info-box -->
+
         </div>
+
         <!-- /.col -->
-        <div class="col-12 col-sm-6 col-md-3">
-
-            <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-
-        <!-- fix for small devices only -->
-        <div class="clearfix hidden-md-up"></div>
-
-
-
     </div>
+
 
 
 </div>

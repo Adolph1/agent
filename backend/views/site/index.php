@@ -2,7 +2,7 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'AGENT MIS';
+$this->title = 'WAKALA MONEY MANAGEMENT SYSTEM (MMS)';
 ?>
 <div class="site-index">
 

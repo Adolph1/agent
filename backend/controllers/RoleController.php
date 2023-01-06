@@ -78,15 +78,27 @@ class RoleController extends Controller
             }
         }
         else{
-            Yii::$app->session->setFlash('danger', Yii::t('app', 'You dont have permission to create a role'));
+            Yii::$app->session->setFlash('', [
+                'type' => 'danger',
+                'duration' => 1500,
+                'icon' => 'warning',
+                'message' => 'You dont have permission to create a role',
+                'positonY' => 'bottom',
+                'positonX' => 'right'
+            ]);
             return $this->redirect(['index']);
         }
     }
 
     public function actionUpdate($name)
     {
-        if(yii::$app->User->can('admin')) {
 
+        if(yii::$app->User->can('admin')) {
+            if ($name == 'admin') {
+
+                Yii::$app->session->setFlash('success', Yii::t('app', 'The Administrator has all permissions'));
+                return $this->redirect(['view', 'name' => $name]);
+            }
             $model = $this->findModel($name);
             if ($model->load(Yii::$app->request->post())) {
                 $permissions = $this->preparePermissions(Yii::$app->request->post());
@@ -105,9 +117,9 @@ class RoleController extends Controller
             }
         }
         else{
-                Yii::$app->session->setFlash('danger', Yii::t('app', 'You dont have permission to update a role'));
-                return $this->redirect(['index']);
-            }
+            Yii::$app->session->setFlash('danger', Yii::t('app', 'You dont have permission to update a role'));
+            return $this->redirect(['index']);
+        }
     }
 
     public function actionDelete($name)
@@ -118,6 +130,7 @@ class RoleController extends Controller
             if ($name) {
                 if (!Auth::hasUsersByRole($name)) {
                     $auth = Yii::$app->getAuthManager();
+
                     $role = $auth->getRole($name);
 
                     // clear asset permissions

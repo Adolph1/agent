@@ -8,8 +8,8 @@ use yii\widgets\DetailView;
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Service Types'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
+//$this->params['breadcrumbs'][] = $this->title;
+//\yii\web\YiiAsset::register($this);
 ?>
 <div class="service-type-view">
 
@@ -31,6 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'title',
+            'company_id',
+            'created_by',
+            'created_at',
         ],
     ]) ?>
 

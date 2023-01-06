@@ -17,8 +17,8 @@ class ServiceTypeSearch extends ServiceType
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['title'], 'safe'],
+            [['id', 'company_id'], 'integer'],
+            [['title', 'created_by', 'created_at'], 'safe'],
         ];
     }
 
@@ -59,9 +59,12 @@ class ServiceTypeSearch extends ServiceType
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'company_id' => $this->company_id,
+            'created_at' => $this->created_at,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title]);
+        $query->andFilterWhere(['like', 'title', $this->title])
+            ->andFilterWhere(['like', 'created_by', $this->created_by]);
 
         return $dataProvider;
     }

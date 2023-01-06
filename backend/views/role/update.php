@@ -1,13 +1,13 @@
 <?php
 
 $this->title = Yii::t('app', 'Update ') . Yii::t('app', '{name}', ['name' => $model->name]);
-$this->params['breadcrumbs'] = [
-    [
-        'label' => Yii::t('app', 'Roles'),
-        'url' => ['/role']
-    ],
-    $this->title
-];
+//$this->params['breadcrumbs'] = [
+//    [
+//        'label' => Yii::t('app', 'Roles'),
+//        'url' => ['/role']
+//    ],
+//    $this->title
+//];
 ?>
 <br>
 <?php

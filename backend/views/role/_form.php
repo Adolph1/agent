@@ -9,7 +9,7 @@ use kartik\icons\Icon;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="row">
+
     <?php
     $form = ActiveForm::begin([
         'enableClientValidation' => true,
@@ -18,6 +18,7 @@ use kartik\icons\Icon;
         'validateOnChange' => false*/
     ]);
     ?>
+<div class="row">
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">

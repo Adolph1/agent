@@ -68,17 +68,13 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
-    }
-
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-    public function actionFashion()
-    {
-        return $this->render('index');
+        if(Yii::$app->user->can('BranchManager')){
+            return $this->render('branch_manager');
+        }elseif (Yii::$app->user->can('BusinessOwner')){
+            return $this->render('business_owner');
+        }else {
+            return $this->render('index');
+        }
     }
 
 

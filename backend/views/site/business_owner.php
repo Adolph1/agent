@@ -11,7 +11,7 @@ $this->title ='@'. \backend\models\Branch::myBranchName();
 
     <div class="row">
         <!-- /.col -->
-        <div class="col-12 col-sm-8 col-md-8">
+        <div class="col-12 col-sm-12 col-md-12">
 
 
             <div class="card-purple">
@@ -21,6 +21,7 @@ $this->title ='@'. \backend\models\Branch::myBranchName();
                         <thead>
                         <tr>
                             <th>S/N</th>
+                            <th>BRANCH NAME</th>
                             <th>ACCOUNT NAME</th>
                             <th>TOTAL MONEY IN</th>
                             <th colspan="2" class="text-right">TOTAL MONEY OUT</th>
@@ -29,7 +30,7 @@ $this->title ='@'. \backend\models\Branch::myBranchName();
                         </thead>
                         <tbody>
                         <?php
-                        $accounts = \backend\models\Account::find()->where(['branch_id' => \backend\models\Branch::getMyBranchId()])->all();
+                        $accounts = \backend\models\Account::find()->where(['in','branch_id', \backend\models\Branch::getOwnerBranchIds()])->all();
                         if($accounts != null){
                             $i =1;
                             $sum = 0;
@@ -42,6 +43,7 @@ $this->title ='@'. \backend\models\Branch::myBranchName();
                                 ?>
                                 <tr>
                                     <td><?= $i;?></td>
+                                    <td><?= $account->branch->name;?></td>
                                     <td><?= $account->name;?></td>
                                     <td><?= Yii::$app->formatter->asDecimal($depositBalance,2);?></td>
                                     <td colspan="2" class="text-right"><?= Yii::$app->formatter->asDecimal($withdrawBalance,2);?></td>
@@ -57,7 +59,7 @@ $this->title ='@'. \backend\models\Branch::myBranchName();
 
                         ?>
                         <tr>
-                            <th colspan="2" class="text-right">ACCOUNTS TOTAL MONEY IN</th>
+                            <th colspan="3" class="text-right">ACCOUNTS TOTAL MONEY IN</th>
                             <th><?= Yii::$app->formatter->asDecimal($depsum,2);?></th>
                             <th class="text-right">ACCOUNTS TOTAL MONEY OUT</th>
                             <th class="text-right"><?= Yii::$app->formatter->asDecimal($withsum,2);?></th>
@@ -77,44 +79,52 @@ $this->title ='@'. \backend\models\Branch::myBranchName();
 
         </div>
 
-        <div class="col-12 col-sm-4 col-md-4">
+
+        <!-- /.col -->
+    </div>
+    <div class="row">
+
+        <div class="col-12 col-sm-12 col-md-12">
 
 
-                <div class="card-orange">
-                    <div class="card-header text-white">Account Balances</div>
-                    <div class="card-body">
-                        <table class="table table-striped table-valign-middle">
+            <div class="card-orange">
+                <div class="card-header text-white">Account Balances</div>
+                <div class="card-body">
+                    <table class="table table-striped table-valign-middle">
                         <thead>
                         <tr>
                             <th>S/N</th>
+                            <th>BRANCH NAME</th>
                             <th>ACCOUNT NAME</th>
                             <th>BALANCE</th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php
-                        $accounts = \backend\models\Account::find()->where(['branch_id' => \backend\models\Branch::getMyBranchId()])->all();
+                        $accounts = \backend\models\Account::find()->where(['in','branch_id',\backend\models\Branch::getOwnerBranchIds()])->all();
                         if($accounts != null){
                             $i =1;
                             $sum = 0;
                             foreach ($accounts as $account){
-                        ?>
-                        <tr>
-                            <td><?= $i;?></td>
-                            <td><?= $account->name;?></td>
-                            <td><?= Yii::$app->formatter->asDecimal($account->initial_balance,2);?></td>
-                        </tr>
-                        <?php
+                                ?>
+                                <tr>
+                                    <td><?= $i;?></td>
+                                    <td><?= $account->branch->name;?></td>
+                                    <td><?= $account->name;?></td>
+                                    <td><?= Yii::$app->formatter->asDecimal($account->initial_balance,2);?></td>
+                                </tr>
+                                <?php
                                 $i++;
                                 $sum = $sum + $account->initial_balance;
                             }
 
-                        ?>
-                        <tr>
-                            <td></td>
-                            <th class="text-right">Total</th>
-                            <th><?= Yii::$app->formatter->asDecimal($sum,2);?></th>
-                        </tr>
+                            ?>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <th class="text-right">Total</th>
+                                <th><?= Yii::$app->formatter->asDecimal($sum,2);?></th>
+                            </tr>
                             <?php
                         }
                         ?>
@@ -123,15 +133,13 @@ $this->title ='@'. \backend\models\Branch::myBranchName();
                     </table>
 
 
-                    </div>
                 </div>
-                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box-content -->
 
             <!-- /.info-box -->
 
         </div>
-
-        <!-- /.col -->
     </div>
 
 

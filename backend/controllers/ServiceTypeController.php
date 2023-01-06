@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\User;
 use Yii;
 use backend\models\ServiceType;
 use backend\models\ServiceTypeSearch;
@@ -65,6 +66,9 @@ class ServiceTypeController extends Controller
     public function actionCreate()
     {
         $model = new ServiceType();
+        $model->company_id = User::myCompanyID();
+        $model->created_by = User::getUsername();
+        $model->created_at = User::getUserTime();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);

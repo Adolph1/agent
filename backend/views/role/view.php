@@ -5,13 +5,13 @@ use kartik\icons\Icon;
 use yii\widgets\DetailView;
 
 $this->title = Yii::t('app', 'Role') . " $model->name";
-$this->params['breadcrumbs'] = [
-    [
-        'label' => Yii::t('app', 'Roles'),
-        'url' => ['/role']
-    ],
-    $model->name
-];
+//$this->params['breadcrumbs'] = [
+//    [
+//        'label' => Yii::t('app', 'Roles'),
+//        'url' => ['/role']
+//    ],
+//    $model->name
+//];
 ?>
 
 <div class="row">
